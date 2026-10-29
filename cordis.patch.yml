@@ -1,0 +1,5 @@
+# dsh-font-wheel bundle patch：把本插件插进 profile 的插件树。
+# 挂上去之后就有一个客户端半（lib/client.js）监听 Ctrl+滚轮。
+- insert:
+    - id: ui-font-wheel
+      name: dsh-font-wheel

@@ -1,0 +1,62 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: smoke (node ${{ matrix.node }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [20, 22]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node }}
+
+      # no dependencies, no build step — the bundle is plain CommonJS
+      - name: client half
+        run: node test/client.smoke.mjs
+
+      - name: host half
+        run: node test/host.smoke.mjs
+
+  package:
+    name: package shape
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: required files exist
+        run: |
+          test -f lib/index.js
+          test -f lib/client.js
+          test -f cordis.patch.yml
+          test -f LICENSE
+
+      - name: manifest is valid and self-consistent
+        run: |
+          node -e '
+            const fs = require("node:fs");
+            const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
+            const assert = (cond, msg) => { if (!cond) { console.error(msg); process.exit(1); } };
+            assert(pkg.name === "dsh-font-wheel", "unexpected name");
+            assert(pkg.dsh?.bundle?.patch === "./cordis.patch.yml", "bundle patch missing");
+            assert(pkg.dsh?.client?.platform === "web", "client platform missing");
+            assert(fs.existsSync(pkg.main), "main entry missing");
+            for (const file of pkg.files) assert(fs.existsSync(file), `files[] entry missing: ${file}`);
+            console.log("manifest ok");
+          '

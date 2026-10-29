@@ -1,0 +1,58 @@
+{
+  "name": "dsh-font-wheel",
+  "version": "0.1.0",
+  "description": "Hold Ctrl and scroll the wheel to change the DeepSeek Harness workspace font size (按住 Ctrl 滚动滚轮调整 DSH 工作区字号)",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [],
+      "platform": "web"
+    }
+  },
+  "files": [
+    "lib/index.js",
+    "lib/client.js",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "test": "node test/client.smoke.mjs && node test/host.smoke.mjs",
+    "test:client": "node test/client.smoke.mjs",
+    "test:host": "node test/host.smoke.mjs"
+  },
+  "keywords": [
+    "dsh",
+    "dsh-plugin",
+    "deepseek-harness",
+    "font-size",
+    "zoom",
+    "mouse-wheel",
+    "ctrl-wheel"
+  ],
+  "author": "ZX-yiyuzheluoji",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ZX-yiyuzheluoji/dsh-font-wheel.git"
+  },
+  "homepage": "https://github.com/ZX-yiyuzheluoji/dsh-font-wheel#readme",
+  "bugs": {
+    "url": "https://github.com/ZX-yiyuzheluoji/dsh-font-wheel/issues"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}
